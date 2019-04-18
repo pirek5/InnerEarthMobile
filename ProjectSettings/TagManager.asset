@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - SteamBG
+  - SteamFG
+  - FireFG
+  - FireBG
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Ground
+  - Ladder
+  - Hazards
+  - Interactables
+  - Player
+  - Crates
+  - Lava
+  - Grass
+  - DeepWater
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 1712021159
+    locked: 0
+  - name: Background Lights
+    uniqueID: 2761760075
+    locked: 0
+  - name: Background Decals
+    uniqueID: 682472397
+    locked: 0
+  - name: Ladders
+    uniqueID: 1067677871
+    locked: 0
+  - name: Interactables
+    uniqueID: 1545085435
+    locked: 0
+  - name: Player
+    uniqueID: 288744231
+    locked: 0
+  - name: Foreground
+    uniqueID: 2568675643
+    locked: 0
+  - name: Water
+    uniqueID: 3522748951
+    locked: 0
+  - name: Foreground Decals
+    uniqueID: 3559703549
+    locked: 0
+  - name: LavaLight2
+    uniqueID: 3535247043
+    locked: 0
+  - name: LavaLight
+    uniqueID: 2377330295
+    locked: 0
+  - name: Lava
+    uniqueID: 3068177245
+    locked: 0
+  - name: UI
+    uniqueID: 717715829
+    locked: 0
