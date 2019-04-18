@@ -14,6 +14,7 @@ namespace LevelManagement
         [SerializeField] private GameObject confirmationWindow;
         [SerializeField] private Image ladderRimImage; 
         [SerializeField] private Image crateRimImage;
+        //[SerializeField] private GameObject player;
 
         //config
         [SerializeField] private float blinkingPeriod;
@@ -44,7 +45,9 @@ namespace LevelManagement
             crateToFollow.transform.position = crateStartPosition;
             crateToFollow.constantPositionX = crateToFollow.transform.position.x;
             crateToFollow.isMoveable = false;
-            FindObjectOfType<Player>().transform.position = playerStartPosition;
+            //player.SetActive(true);
+           // player.transform.position = playerStartPosition;
+
         }
 
         private void Update()
@@ -114,6 +117,11 @@ namespace LevelManagement
             Cursor.visible = false;
             Time.timeScale = 1;
             confirmationWindow.SetActive(false);
+        }
+
+        public void OnDisable()
+        {
+         //   player.SetActive(false);
         }
     }
 }

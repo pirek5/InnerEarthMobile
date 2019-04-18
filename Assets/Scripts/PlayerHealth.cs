@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerHealth : Player
+public class PlayerHealth : MonoBehaviour
 {
 
     //reference set in editor //TODO bez konieczności użycia edytora
@@ -17,23 +17,30 @@ public class PlayerHealth : Player
     [SerializeField] private float blinkingFrequency = 1f;
 
     // state
-    private bool zeroVelocity = false;
+    public int lives = 3;
     private bool immunity = false;
 
-    protected override void Update()
-    {
-        if (isActive)
-        {
-            base.Update();
-            if (isTouchingWater) Drowning();
-            if (isHeadTouchingLava) InstantDeath();
-            if (isTouchingLava && !immunity) LavaTouched();
-            if (isTouchingEnemy && !immunity) EnemyTouched();
-        }
+    //dependencies
+    Player player;
+    PlayerAnimations playerAnimations;
+    Rigidbody2D myRigidbody;
 
-        if (zeroVelocity) // prevents weird behavior after death or during drowning
+    private void Awake()
+    {
+        player = GetComponent<Player>();
+        playerAnimations = GetComponent<PlayerAnimations>();
+        myRigidbody = GetComponent<Rigidbody2D>();
+    
+    }
+
+    private void LateUpdate()
+    {
+        if (Player.IsActive)
         {
-            myRigidbody.velocity = Vector2.zero;
+            if (player.isTouchingWater) Drowning();
+            if (player.isHeadTouchingLava) InstantDeath();
+            if (player.isTouchingLava && !immunity) LavaTouched();
+            if (player.isTouchingEnemy && !immunity) EnemyTouched();
         }
     }
 
@@ -57,13 +64,13 @@ public class PlayerHealth : Player
 
     IEnumerator AfterHitBodyThrow()
     {
-        isActive = false;
+        Player.IsActive = false;
         myRigidbody.velocity = new Vector2(0, verticalAfterHitBodyThrow);
         yield return new WaitForSeconds(throwPeriod);
 
         if(lives > 0) // activate player after hit only if this wasnt last life
         {
-            IsActive = true;
+            Player.IsActive = true;
         }
     }
 
@@ -86,24 +93,24 @@ public class PlayerHealth : Player
     private void Drowning()
     {
         LoseHealth(lives);
-        zeroVelocity = true;
-        isActive = false;
+        player.zeroVelocity = true;
+        Player.IsActive = false;
         myRigidbody.gravityScale = 0.3f;
-        animator.SetTrigger("Drowning");
+        playerAnimations.Drowning();
         StartCoroutine(DelayedDeath(drowningTime));
     }
 
     private IEnumerator DelayedDeath(float delay)
     {
         yield return new WaitForSeconds(delay);
-        zeroVelocity = true;
+        player.zeroVelocity = true;
         DeathSequence();
     }
 
     private void DeathSequence()
     {
         transform.localScale = new Vector2(1f, 1f);
-        animator.SetTrigger("Grave");
+        playerAnimations.Grave();
         GameManager.Instance.LevelLose();
     }
 
@@ -116,8 +123,8 @@ public class PlayerHealth : Player
     private void InstantDeath()
     {
         LoseHealth(lives);
-        isActive = false;
-        zeroVelocity = true;
+        Player.IsActive = false;
+        player.zeroVelocity = true;
         DeathSequence();
     }
 
@@ -125,8 +132,8 @@ public class PlayerHealth : Player
     {
         if (lives <= 0)
         {
-            isActive = false;
-            animator.SetTrigger("Dead");
+            Player.IsActive = false;
+            playerAnimations.Dead();
             StartCoroutine(DelayedDeath(endGameDelay));
         }
         else

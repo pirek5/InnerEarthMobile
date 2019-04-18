@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
-public class PlayerMovement : Player {
+public class PlayerMovement : MonoBehaviour
+{
 
     //config
     [SerializeField] private float movingHorizontalSpeedOnLadder = 1f;
@@ -19,6 +20,20 @@ public class PlayerMovement : Player {
     public float currentMovingSpeed;
     private GameObject crateToPull;
 
+    //dependencies
+    private Rigidbody2D myRigidbody;
+    private Player player;
+    private Animator animator;
+
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+        myRigidbody = GetComponent<Rigidbody2D>();
+        player = GetComponent<Player>();
+    }
+
+
     void Start ()
     {
         currentMovingSpeed = defaultMovingSpeed;
@@ -26,48 +41,45 @@ public class PlayerMovement : Player {
         Physics2D.queriesStartInColliders = false;
     }
 
-    protected override void Update () {
-        base.Update();
-        if (isActive)
-        {
-            FlipSide();
-            AnimatePlayer();
-        }
-    }
-
     private void FixedUpdate()
     {
-        if (isActive)
+        if (Player.IsActive)
         {
             MovingHorizontal();
             Jumping();
             PullingCrate();
             ClimbingLadder();
             SetMovingSpeed();
+            FlipSide();
+        }
+
+        if (player.zeroVelocity) // prevents weird behavior after death or during drowning
+        {
+            myRigidbody.velocity = Vector2.zero;
         }
     }
 
     private void MovingHorizontal()
     {
-        myRigidbody.velocity = new Vector2(xAxisInput * currentMovingSpeed, myRigidbody.velocity.y);
+        myRigidbody.velocity = new Vector2(player.xAxisInput * currentMovingSpeed, myRigidbody.velocity.y);
     }
 
     private void Jumping()
     {
-        if (jumpPressed && isTouchingGround && !isHoldingCrate)
+        if (player.jumpPressed && player.isTouchingGround && !player.isHoldingCrate)
         {
             myRigidbody.velocity = new Vector2(myRigidbody.velocity.x, jumpingStrenght);
-            jumpPressed = false;
+            player.jumpPressed = false;
         }
         
     }
 
     private void ClimbingLadder()
     {
-        if (isTouchingLadder)
+        if (player.isTouchingLadder)
         {
             myRigidbody.gravityScale = 0;
-            myRigidbody.velocity = new Vector2(myRigidbody.velocity.x, yAxisInput * climbingLadderSpeed);
+            myRigidbody.velocity = new Vector2(myRigidbody.velocity.x, player.yAxisInput * climbingLadderSpeed);
         }
         else
         {
@@ -78,17 +90,17 @@ public class PlayerMovement : Player {
     private void PullingCrate()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right * transform.localScale, pullingRange, crateMask);
-        if(hit.collider != null && shiftPressed && isTouchingGround)
+        if(hit.collider != null && player.shiftPressed && player.isTouchingGround)
         {
-            isHoldingCrate = true;
+            player.isHoldingCrate = true;
             crateToPull = hit.collider.gameObject;
             crateToPull.GetComponent<FixedJoint2D>().enabled = true;
             crateToPull.GetComponent<FixedJoint2D>().connectedBody = myRigidbody;
             crateToPull.GetComponent<Crate>().isMoveable = true;
         }
-        else if(!shiftPressed)
+        else if(!player.shiftPressed)
         {
-            isHoldingCrate = false;
+            player.isHoldingCrate = false;
             if (crateToPull)
             {
                 crateToPull.GetComponent<FixedJoint2D>().enabled = false;
@@ -99,11 +111,11 @@ public class PlayerMovement : Player {
 
     private void SetMovingSpeed()
     {
-        if (isHoldingCrate)
+        if (player.isHoldingCrate)
         {
             currentMovingSpeed = pushingCrateSpeed;
         }
-        else if (isTouchingLadder && !isTouchingGround)
+        else if (player.isTouchingLadder && !player.isTouchingGround)
         {
               
             currentMovingSpeed = movingHorizontalSpeedOnLadder;
@@ -116,44 +128,14 @@ public class PlayerMovement : Player {
 
     private void FlipSide()
     {
-        if (xAxisInput > 0 && !isHoldingCrate)
+        if (player.xAxisInput > 0 && !player.isHoldingCrate)
         {
             transform.localScale = new Vector2(1f, 1f);
         }
-        else if(xAxisInput < 0 && !isHoldingCrate)
+        else if(player.xAxisInput < 0 && !player.isHoldingCrate)
         {
             transform.localScale = new Vector2(-1f, 1f);
         }
     }
 
-    private void AnimatePlayer()
-    {
-        if(Mathf.Abs(myRigidbody.velocity.x) > Mathf.Epsilon)
-        {
-            animator.SetBool("Running", true);
-            animator.speed = Mathf.Abs(xAxisInput);
-        }
-        else
-        {
-            animator.SetBool("Running", false);
-            animator.speed = 1f;
-        }
-
-
-        //animator.SetBool("Running", Mathf.Abs(myRigidbody.velocity.x) > Mathf.Epsilon);
-        animator.SetBool("OnLadder", isTouchingLadder && !isTouchingGround);
-        animator.SetBool("Climbing", isTouchingLadder && !isTouchingGround && (yAxisInput != 0 || xAxisInput != 0));
-
-        animator.SetBool("PushingIdle", isHoldingCrate);
-        if (isHoldingCrate)
-        {
-            animator.SetBool("Pushing", xAxisInput * transform.localScale.x > 0);
-            animator.SetBool("Pulling", xAxisInput * transform.localScale.x < 0);
-        }
-        else
-        {
-            animator.SetBool("Pushing", false);
-            animator.SetBool("Pulling", false);
-        }
-    }
 }
