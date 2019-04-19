@@ -14,7 +14,8 @@ namespace LevelManagement
         [SerializeField] private GameObject confirmationWindow;
         [SerializeField] private Image ladderRimImage; 
         [SerializeField] private Image crateRimImage;
-        //[SerializeField] private GameObject player;
+        [SerializeField] private GameObject player;
+        [SerializeField] private GameObject controlls;
 
         //config
         [SerializeField] private float blinkingPeriod;
@@ -30,7 +31,7 @@ namespace LevelManagement
         {
             PositioningObjects(); // Player and crate
             StartCoroutine(BlinkingObjectivesRim());
-            currentPage = 0;  // reset first to first page
+            currentPage = 0;  // reset page to first
             pages[0].SetActive(true);
             foreach(TutorialObjective tutorialObj in FindObjectsOfType<TutorialObjective>()) // init all tutorial objectives
             {
@@ -45,9 +46,9 @@ namespace LevelManagement
             crateToFollow.transform.position = crateStartPosition;
             crateToFollow.constantPositionX = crateToFollow.transform.position.x;
             crateToFollow.isMoveable = false;
-            //player.SetActive(true);
-           // player.transform.position = playerStartPosition;
-
+            controlls.SetActive(true);
+            player.transform.position = playerStartPosition;
+            player.SetActive(true);
         }
 
         private void Update()
@@ -68,10 +69,6 @@ namespace LevelManagement
                 if(i == currentPage)
                 {
                     pages[i].SetActive(true);
-                    if(currentPage == 4)
-                    {
-                        Cursor.visible = true;
-                    }
                 }
             }
         }
@@ -94,19 +91,16 @@ namespace LevelManagement
             }
             base.OnBackPressed();
             base.OnBackPressed();
-            Cursor.visible = true;
         }
 
         private void BackToMainMenuConfirmationWindow()
         {
             Time.timeScale = Convert.ToInt32(confirmationWindow.activeSelf);
             confirmationWindow.SetActive(!confirmationWindow.activeSelf);
-            Cursor.visible = !Cursor.visible;
         }
 
         public void OnYesPressed()
         {
-            Cursor.visible = true;
             Time.timeScale = 1;
             confirmationWindow.SetActive(false);
             OnBackPressed();
@@ -114,14 +108,14 @@ namespace LevelManagement
 
         public void OnNoPressed()
         {
-            Cursor.visible = false;
             Time.timeScale = 1;
             confirmationWindow.SetActive(false);
         }
 
         public void OnDisable()
         {
-         //   player.SetActive(false);
+            player.SetActive(false);
+            controlls.SetActive(false);
         }
     }
 }

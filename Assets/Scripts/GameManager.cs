@@ -33,7 +33,6 @@ public class GameManager : MonoBehaviour // TODO zmienic z magicznych liczba ser
     {
         if (Player.IsActive)
         {
-            Cursor.visible = true;
             WinScreen.Open();
             LevelScoreManager.Instance.UpdateLevelScoreDisplay();
             StopPlayerMovement();
@@ -46,7 +45,6 @@ public class GameManager : MonoBehaviour // TODO zmienic z magicznych liczba ser
     public void LevelLose()
     {
         StopEnemiesMovement();
-        Cursor.visible = true;
         LoseScreen.Open();
     }
 

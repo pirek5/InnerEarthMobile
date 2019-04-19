@@ -54,8 +54,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   joystick: {fileID: 0}
-  jumpButton: {fileID: 0}
-  deadzone: 0.3
+  minMovement: 0.4
+  deadzone: 0.1
   xAxisInput: 0
   yAxisInput: 0
   isTouchingGround: 0

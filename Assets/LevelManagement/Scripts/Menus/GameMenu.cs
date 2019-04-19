@@ -18,7 +18,6 @@ namespace LevelManagement
 
         public void OnPausePressed()
         {
-            Cursor.visible = true;
             Time.timeScale = 0;
             PauseMenu.Open();
         }

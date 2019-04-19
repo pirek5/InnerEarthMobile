@@ -19,7 +19,6 @@ namespace LevelManagement
 
         public void OnNextLevelPressed()
         {
-            Cursor.visible = false;
             SwitchPages();
             base.OnBackPressed();
             LevelLoader.instance.LoadNextLevel();
@@ -27,7 +26,6 @@ namespace LevelManagement
 
         public void OnRestartPressed()
         {
-            Cursor.visible = false;
             SwitchPages();
             base.OnBackPressed();
             LevelLoader.instance.ReloadLevel();

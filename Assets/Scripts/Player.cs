@@ -10,6 +10,7 @@ public class Player : MonoBehaviour { // base class - collect input and informat
     [SerializeField] private Joystick joystick;
 
     //config
+    [SerializeField] private float minMovement;
     [SerializeField] private float deadzone;
 
     //state
@@ -46,8 +47,32 @@ public class Player : MonoBehaviour { // base class - collect input and informat
         
 
         //Input
-        xAxisInput = joystick.Horizontal > deadzone || joystick.Horizontal < -deadzone ? joystick.Horizontal : 0f;
-        yAxisInput = joystick.Vertical > deadzone || joystick.Vertical < -deadzone ? joystick.Vertical : 0f;
+        if(joystick.Horizontal < deadzone && joystick.Horizontal > -deadzone)
+        {
+            xAxisInput = 0f;
+        }
+        else if(joystick.Horizontal < minMovement && joystick.Horizontal > -minMovement)
+        {
+            xAxisInput = minMovement * Mathf.Sign(joystick.Horizontal);
+        }
+        else
+        {
+            xAxisInput = joystick.Horizontal;
+        }
+
+        if (joystick.Vertical < deadzone && joystick.Vertical > -deadzone)
+        {
+            yAxisInput = 0f;
+        }
+        else if (joystick.Vertical < minMovement && joystick.Vertical > -minMovement)
+        {
+            yAxisInput = minMovement* Mathf.Sign(joystick.Vertical);
+        }
+        else
+        {
+            yAxisInput = joystick.Vertical;
+        }
+
 
         jumpPressed = CrossPlatformInputManager.GetButtonDown("Jump");
         shiftPressed = CrossPlatformInputManager.GetButton("Fire1");

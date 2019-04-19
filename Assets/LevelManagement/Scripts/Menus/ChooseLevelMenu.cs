@@ -39,14 +39,12 @@ namespace LevelManagement
         public void OnLevelPressed(int level) // odwołanie ustawione w edytorze
         {
             LevelLoader.instance.LoadLevel(level);
-            Cursor.visible = false;
             GameMenu.Open();
         }
 
         public void OnTutorialPressed()
         {
             Tutorial.Open();
-            Cursor.visible = false;
             FindObjectOfType<Tutorial>().Init(); //TODO
         }
 
